@@ -1,0 +1,39 @@
+CREATE DATABASE company;
+
+-- Use database
+USE company;
+
+-- Create table emp
+CREATE TABLE emp (
+  Eno INT PRIMARY KEY AUTO_INCREMENT,
+  Ename VARCHAR(100) NOT NULL,
+  Address VARCHAR(100) DEFAULT 'Nashik',
+  Joindate DATE,
+  Salary DECIMAL(10, 2)
+);
+
+-- Modify table emp to start auto increment from 101
+ALTER TABLE emp AUTO_INCREMENT = 101;
+
+-- Add field Post in the emp table
+ALTER TABLE emp ADD Post VARCHAR(100);
+
+-- Insert data into emp table
+INSERT INTO emp (Ename, Address, Joindate, Post, Salary)
+VALUES 
+('John Doe', 'Nashik', '2020-01-01', 'Manager', 50000.00),
+('Jane Doe', 'Pune', '2020-02-01', 'Team Lead', 60000.00),
+('Bob Smith', 'Mumbai', '2020-03-01', 'Software Engineer', 40000.00),
+('Alice Johnson', 'Nashik', '2020-04-01', 'HR', 45000.00),
+('Mike Brown', 'Bangalore', '2020-05-01', 'Sales', 55000.00);
+
+-- Create Index on Ename field of employee table
+CREATE INDEX idx_Ename ON emp (Ename);
+
+-- Create View on employee table to show only Ename and Salary
+CREATE VIEW emp_view AS
+SELECT Ename, Salary
+FROM emp;
+
+-- Query the view
+SELECT * FROM emp_view;

@@ -1,0 +1,109 @@
+SHOW DATABASES; 
+-- Create a new database named 'student' 
+CREATE DATABASE student; 
+
+
+-- Use the newly created 'student' database 
+USE student; 
+
+
+-- Create the 'stud_tab' table with appropriate fields 
+CREATE TABLE stud_tab ( 
+ stud_id INT(4), 
+ stud_name VARCHAR(20), 
+ stud_dept VARCHAR(10), 
+ stud_dob DATE, 
+ stud_address VARCHAR(10) 
+); 
+
+
+-- Verify table structure 
+DESC stud_tab; 
+
+
+-- 1. Insert records into 'stud_tab' 
+INSERT INTO stud_tab VALUES (1, 'Ram', 'Comp', '2002-11-05', 'Pune'); 
+INSERT INTO stud_tab VALUES (2, 'Soham', 'IT', '2002-09-03', 'Nashik'); 
+INSERT INTO stud_tab VALUES (3, 'Ramesh', 'Comp', '2002-03-19', 'Pune'); 
+INSERT INTO stud_tab VALUES (4, 'Mohan', 'AI&DS', '2002-02-22', 'Nagpur'); 
+
+
+-- 2. Select all records from 'stud_tab' 
+SELECT * FROM stud_tab; 
+
+
+-- Alter the table to add a new column 'shift' 
+ALTER TABLE stud_tab ADD shift VARCHAR(10); 
+
+
+-- 3. Update specific records based on condition 
+UPDATE stud_tab SET shift = 'first' WHERE stud_id = 1; 
+UPDATE stud_tab SET shift = 'second' WHERE stud_id = 2; 
+UPDATE stud_tab SET shift = 'first' WHERE stud_id = 3; 
+UPDATE stud_tab SET shift = 'first' WHERE stud_id = 4; 
+
+
+-- 4. Select all records again to see the updated 'shift' values 
+SELECT * FROM stud_tab; 
+
+
+-- 5. Insert a new record including the 'shift' column 
+INSERT INTO stud_tab VALUES (5, 'Omkar', 'ENTC', '2002-06-26', 'Pune', 'second'); 
+
+
+-- 6. Delete records where address is 'Nagpur' 
+DELETE FROM stud_tab WHERE stud_address = 'Nagpur'; 
+
+
+-- 7. Update 'stud_id' for a specific student based on 'stud_name' 
+UPDATE stud_tab SET stud_id = 4 WHERE stud_name = 'Omkar'; 
+
+
+-- 8. Select records where 'stud_dob' is within a specific range 
+SELECT * FROM stud_tab WHERE stud_dob BETWEEN '2002-01-01' AND '2002-07-01'; 
+
+
+-- Alter the table to add a new column 'stud_fees' 
+ALTER TABLE stud_tab ADD stud_fees INT(15); 
+
+
+-- 9. Update 'stud_fees' values for various students 
+UPDATE stud_tab SET stud_fees = 15000 WHERE stud_id = 1; 
+UPDATE stud_tab SET stud_fees = 20000 WHERE stud_id = 2; 
+UPDATE stud_tab SET stud_fees = 20000 WHERE stud_id = 3; 
+UPDATE stud_tab SET stud_fees = 15000 WHERE stud_id = 4; 
+
+
+-- 10. Select all records again to see the updated 'stud_fees' 
+SELECT * FROM stud_tab; 
+
+
+-- 11. Select students with the highest 'stud_fees' 
+SELECT * FROM stud_tab WHERE stud_fees = (SELECT MAX(stud_fees) FROM 
+stud_tab); 
+
+
+-- 12. Calculate the sum of all 'stud_fees' values 
+SELECT SUM(stud_fees) FROM stud_tab; 
+
+
+-- 13. Create a new table 'stud_info' based on selected columns from 'stud_tab' 
+CREATE TABLE stud_info AS SELECT stud_id, stud_name FROM stud_tab; 
+
+
+-- 14. Use UNION to combine 'stud_id' from both tables and remove duplicates 
+SELECT stud_id FROM stud_tab UNION SELECT stud_id FROM stud_info; 
+
+
+-- 15. Group by 'stud_dept' and calculate the average 'stud_fees' for each department 
+SELECT stud_dept, AVG(stud_fees) AS avg_fees FROM stud_tab GROUP BY stud_dept; 
+
+
+-- 16. Count the number of students in each department 
+SELECT stud_dept, COUNT(stud_id) AS student_count FROM stud_tab GROUP BY 
+stud_dept; 
+
+
+-- 17. Order students by 'stud_fees' in descending order to see the highest paying students 
+first 
+SELECT * FROM stud_tab ORDER BY stud_fees DESC;

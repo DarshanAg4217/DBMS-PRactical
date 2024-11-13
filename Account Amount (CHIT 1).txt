@@ -1,0 +1,223 @@
+PS C:\Users\Admin> mysql -u root -p
+Enter password: *********
+
+
+mysql> use jit2425r;
+Database changed
+mysql> desc account;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| C_Id     | int         | YES  |     | NULL    |       |
+| accotype | varchar(10) | YES  |     | NULL    |       |
+| amount   | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc customer;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| C_Id  | int         | YES  |     | NULL    |       |
+| Cname | varchar(10) | YES  |     | NULL    |       |
+| Ccity | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into customer(C_Id,Cname,Ccity) values(1,'John', 'Nashik'), (2,'Seema','Aurangabad'),(3,'Amita','Nagar'),(4,'Rakesh','Pune'),(5,'Samata','Nashil'),(6, 'Ankita', 'Chandwad'),(7,
+    -> 'Bhavika', 'Pune'),(8, 'Deepa', 'Mumbai'),(9,'Nitin','Nagpur'),(10,'Pooja','Pune');
+Query OK, 10 rows affected (0.02 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer;
++------+---------+------------+
+| C_Id | Cname   | Ccity      |
++------+---------+------------+
+|    1 | John    | Nashik     |
+|    2 | Seema   | Aurangabad |
+|    3 | Amita   | Nagar      |
+|    4 | Rakesh  | Pune       |
+|    5 | Samata  | Nashil     |
+|    6 | Ankita  | Chandwad   |
+|    7 | Bhavika | Pune       |
+|    8 | Deepa   | Mumbai     |
+|    9 | Nitin   | Nagpur     |
+|   10 | Pooja   | Pune       |
++------+---------+------------+
+10 rows in set (0.00 sec)
+
+mysql> insert into account(C_Id,accotype,amount) values(1,'Current', 5000), (2,'Saving', 20000),(3,'Saving',70000),(4,'Saving',50000),(6,'Current',35000),(7, 'Loan', 30000),(8,'Saving',50000), (9,'Saving',90000),(10,'Loan',8000),(11,'Current',45000);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from account;
++------+----------+--------+
+| C_Id | accotype | amount |
++------+----------+--------+
+|    1 | Current  |   5000 |
+|    2 | Saving   |  20000 |
+|    3 | Saving   |  70000 |
+|    4 | Saving   |  50000 |
+|    6 | Current  |  35000 |
+|    7 | Loan     |  30000 |
+|    8 | Saving   |  50000 |
+|    9 | Saving   |  90000 |
+|   10 | Loan     |   8000 |
+|   11 | Current  |  45000 |
++------+----------+--------+
+10 rows in set (0.00 sec)
+
+
+
+--------------------------------------------------------------------------------------------------------
+                                              1
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT accotype,amount from account WHERE C_Id IN(SELECT C_Id from customer)AND accotype='Saving';
++----------+--------+
+| accotype | amount |
++----------+--------+
+| Saving   |  20000 |
+| Saving   |  70000 |
+| Saving   |  50000 |
+| Saving   |  50000 |
+| Saving   |  90000 |
++----------+--------+
+5 rows in set (0.00 sec)
+********************************************************************************************************
+********************************************************************************************************
+
+
+
+--------------------------------------------------------------------------------------------------------
+					       2 
+--------------------------------------------------------------------------------------------------------
+
+mysql> SELECT * FROM customer NATURAL JOIN account;
++------+---------+------------+----------+--------+
+| C_Id | Cname   | Ccity      | accotype | amount |
++------+---------+------------+----------+--------+
+|    1 | John    | Nashik     | Current  |   5000 |
+|    2 | Seema   | Aurangabad | Saving   |  20000 |
+|    3 | Amita   | Nagar      | Saving   |  70000 |
+|    4 | Rakesh  | Pune       | Saving   |  50000 |
+|    6 | Ankita  | Chandwad   | Current  |  35000 |
+|    7 | Bhavika | Pune       | Loan     |  30000 |
+|    8 | Deepa   | Mumbai     | Saving   |  50000 |
+|    9 | Nitin   | Nagpur     | Saving   |  90000 |
+|   10 | Pooja   | Pune       | Loan     |   8000 |
++------+---------+------------+----------+--------+
+9 rows in set (0.00 sec)
+
+
+mysql> SELECT * FROM customer LEFT JOIN account ON customer.C_Id=account.C_Id;
++------+---------+------------+------+----------+--------+
+| C_Id | Cname   | Ccity      | C_Id | accotype | amount |
++------+---------+------------+------+----------+--------+
+|    1 | John    | Nashik     |    1 | Current  |   5000 |
+|    2 | Seema   | Aurangabad |    2 | Saving   |  20000 |
+|    3 | Amita   | Nagar      |    3 | Saving   |  70000 |
+|    4 | Rakesh  | Pune       |    4 | Saving   |  50000 |
+|    5 | Samata  | Nashil     | NULL | NULL     |   NULL |
+|    6 | Ankita  | Chandwad   |    6 | Current  |  35000 |
+|    7 | Bhavika | Pune       |    7 | Loan     |  30000 |
+|    8 | Deepa   | Mumbai     |    8 | Saving   |  50000 |
+|    9 | Nitin   | Nagpur     |    9 | Saving   |  90000 |
+|   10 | Pooja   | Pune       |   10 | Loan     |   8000 |
++------+---------+------------+------+----------+--------+
+10 rows in set (0.00 sec)
+
+
+mysql> SELECT * FROM customer RIGHT JOIN account ON customer.C_Id=account.C_
+Id;
++------+---------+------------+------+----------+--------+
+| C_Id | Cname   | Ccity      | C_Id | accotype | amount |
++------+---------+------------+------+----------+--------+
+|    1 | John    | Nashik     |    1 | Current  |   5000 |
+|    2 | Seema   | Aurangabad |    2 | Saving   |  20000 |
+|    3 | Amita   | Nagar      |    3 | Saving   |  70000 |
+|    4 | Rakesh  | Pune       |    4 | Saving   |  50000 |
+|    6 | Ankita  | Chandwad   |    6 | Current  |  35000 |
+|    7 | Bhavika | Pune       |    7 | Loan     |  30000 |
+|    8 | Deepa   | Mumbai     |    8 | Saving   |  50000 |
+|    9 | Nitin   | Nagpur     |    9 | Saving   |  90000 |
+|   10 | Pooja   | Pune       |   10 | Loan     |   8000 |
+| NULL | NULL    | NULL       |   11 | Current  |  45000 |
++------+---------+------------+------+----------+--------+
+10 rows in set (0.00 sec)
+********************************************************************************************************
+********************************************************************************************************
+
+
+--------------------------------------------------------------------------------------------------------
+					       3 
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT * FROM customer WHERE Ccity =(SELECT Ccity FROM customer WHERE Cname='Pooja');
++------+---------+-------+
+| C_Id | Cname   | Ccity |
++------+---------+-------+
+|    4 | Rakesh  | Pune  |
+|    7 | Bhavika | Pune  |
+|   10 | Pooja   | Pune  |
++------+---------+-------+
+3 rows in set (0.00 sec)
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+					       4 
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT * FROM account WHERE amount < (SELECT AVG(amount) FROM account);
++------+----------+--------+
+| C_Id | accotype | amount |
++------+----------+--------+
+|    1 | Current  |   5000 |
+|    2 | Saving   |  20000 |
+|    6 | Current  |  35000 |
+|    7 | Loan     |  30000 |
+|   10 | Loan     |   8000 |
++------+----------+--------+
+5 rows in set (0.01 sec)
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+					       5 
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT C_Id, amount FROM account WHERE amount=(SELECT MAX(amount) FROM account);
++------+--------+
+| C_Id | amount |
++------+--------+
+|    9 |  90000 |
++------+--------+
+1 row in set (0.00 sec)
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+					       6 
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT accotype, MIN(amount) MinAmount FROM account GROUP BY accotype;
++----------+-----------+
+| accotype | MinAmount |
++----------+-----------+
+| Current  |      5000 |
+| Saving   |     20000 |
+| Loan     |      8000 |
++----------+-----------+
+3 rows in set (0.00 sec)
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+					       7 
+--------------------------------------------------------------------------------------------------------
+mysql> SELECT amount FROM account WHERE amount > (SELECT MAX(amount) FROM account WHERE accotype='Saving');
+Empty set (0.00 sec)
+
+
+

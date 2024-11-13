@@ -1,0 +1,92 @@
+create database jit5;
+
+use jit5;
+CREATE TABLE Library (
+Book_ID INT PRIMARY KEY,
+Title VARCHAR(100),
+Author VARCHAR(100),
+Publication_Date DATE
+);
+
+
+
+CREATE TABLE Library_Audit (
+Audit_ID INT AUTO_INCREMENT PRIMARY KEY,
+Book_ID INT,
+Title VARCHAR(100),
+Author VARCHAR(100),
+Publication_Date DATE,
+Audit_Action VARCHAR(50),
+Audit_Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+INSERT INTO Library (Book_ID, Title, Author, Publication_Date)
+VALUES
+(1, 'To Kill a Mockingbird', 'Harper Lee', '1960-07-11'),
+(2, '1984', 'George Orwell', '1949-06-08'),
+(3, 'The Great Gatsby', 'F. Scott Fitzgerald', '1925-04-10'),
+(4, 'Pride and Prejudice', 'Jane Austen', '1813-01-28'),
+(5, 'The Catcher in the Rye', 'J.D. Salinger', '1951-07-16');
+
+
+
+---------------------------------BEFORE UPDATE----------------------------------
+DELIMITER //
+CREATE TRIGGER trg_Library_Update
+BEFORE UPDATE ON Library
+FOR EACH ROW
+BEGIN
+INSERT INTO Library_Audit (Book_ID, Title, Author, Publication_Date, Audit_Action)
+VALUES (OLD.Book_ID, OLD.Title, OLD.Author, OLD.Publication_Date, 'UPDATE(B)');
+END //
+
+
+CREATE TRIGGER trg_Library_Delete
+BEFORE DELETE ON Library
+FOR EACH ROW
+BEGIN
+INSERT INTO Library_Audit (Book_ID, Title, Author, Publication_Date, Audit_Action)
+VALUES (OLD.Book_ID, OLD.Title, OLD.Author, OLD.Publication_Date, 'DELETE(B)');
+END //
+
+
+---------------------------------AFTER UPDATE----------------------------------
+
+CREATE TRIGGER trg_Library_Update_After 
+AFTER UPDATE ON Library 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO Library_Audit (Book_ID, Title, Author, Publication_Date, Audit_Action) 
+VALUES (OLD.Book_ID, OLD.Title, OLD.Author, OLD.Publication_Date, 'UPDATE(A)'); 
+END
+
+CREATE TRIGGER trg_Library_Delete_After 
+AFTER DELETE ON Library 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO Library_Audit (Book_ID, Title, Author, Publication_Date, Audit_Action) 
+VALUES (OLD.Book_ID, OLD.Title, OLD.Author, OLD.Publication_Date, 'DELETE(A)'); 
+END
+--------------------------------------------------------------------------------
+
+DELIMITER ;
+
+UPDATE Library SET Title = 'New Title' WHERE Book_ID = 1;
+
+UPDATE Library SET Title = 'Titanic' WHERE Book_ID = 3;
+
+SELECT * FROM Library_Audit;
+
+SELECT * FROM Library;
+
+-----------------------------------------------------------------------------------
+
+DELETE FROM Library WHERE Book_ID = 2;
+
+DELETE FROM Library WHERE Book_ID = 4;
+
+SELECT * FROM Library_Audit;
+
+SELECT * FROM Library;

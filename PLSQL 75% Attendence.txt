@@ -1,0 +1,29 @@
+create database chit3;
+
+use chit3;
+
+CREATE TABLE Stud ( Roll INT PRIMARY KEY, Att DECIMAL(5,2), Status VARCHAR(2));
+
+desc Stud;
+
+INSERT INTO Stud (Roll, Att, Status) VALUES (1, 80.00, 'ND'), (2, 70.00, 'D'), (3, 90.00, 'ND'), (4, 60.00, 'D'), (5, 85.00, 'ND');
+
+select * from Stud;
+
+
+DELIMITER //
+CREATE PROCEDURE CheckTermGranted(IN v_roll INT)
+BEGIN
+DECLARE v_att DECIMAL(5,2);
+SELECT Att INTO v_att FROM Stud WHERE Roll = v_roll;
+IF v_att < 75 THEN SELECT 'Term not granted' AS Result;
+UPDATE Stud SET Status = 'D' WHERE Roll = v_roll;
+ELSE
+SELECT 'Term granted' AS Result;
+UPDATE Stud SET Status = 'ND' WHERE Roll = v_roll;
+END IF;
+END //
+
+
+DELIMITER ;
+CALL CheckTermGranted(1);

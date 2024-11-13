@@ -1,0 +1,102 @@
+-- Show all available databases 
+SHOW DATABASES; 
+
+-- Create a new database named 'employee' 
+CREATE DATABASE employee; 
+
+-- Use the newly created database
+USE employee; 
+
+
+-- Create the emp_details table with various constraints 
+
+CREATE TABLE emp_details ( 
+ emp_no INT(10) PRIMARY KEY, -- Primary key constraint on 
+employee number 
+ emp_name VARCHAR(30) NOT NULL, -- NOT NULL constraint 
+on employee name 
+ emp_gender CHAR(1) CHECK (emp_gender IN ('M', 'F')), -- CHECK 
+constraint for gender (must be 'M' or 'F') 
+ emp_sal INT(10) CHECK (emp_sal > 0), -- CHECK constraint to 
+ensure positive salary 
+ emp_dept VARCHAR(20) 
+); 
+
+
+
+-- Alter the table to add a new column with a CHECK constraint 
+
+ALTER TABLE emp_details 
+ADD COLUMN emp_age INT(3) CHECK (emp_age > 18); -- CHECK 
+constraint to ensure minimum age is 18 
+
+
+-- Verify table structure after modification 
+DESC emp_details; 
+
+
+-- Insert sample data into emp_details table 
+INSERT INTO emp_details (emp_no, emp_name, emp_gender, emp_sal, 
+emp_dept) 
+VALUES (1, 'Ram', 'M', 300000, 'designing'), 
+ (2, 'Soham', 'M', 300000, 'designing'), 
+ (3, 'Mohan', 'M', 250000, 'management'), 
+ (4, 'Om', 'M', 400000, 'coding'); 
+
+
+-- Retrieve all records from emp_details table 
+SELECT * FROM emp_details; 
+
+
+-- Create a duplicate table emp_info using AS SELECT to copy specific 
+columns from emp_details
+CREATE TABLE emp_info AS SELECT emp_no, emp_name, emp_gender 
+FROM emp_details; 
+
+
+-- Verify records in emp_info table 
+SELECT * FROM emp_info; 
+
+
+-- Truncate the emp_info table, removing all data but keeping the structure 
+TRUNCATE TABLE emp_info; 
+
+
+-- Verify the table is empty 
+SELECT * FROM emp_info; 
+
+
+-- Drop the emp_info table entirely 
+DROP TABLE emp_info; 
+
+
+-- Create views to display specific records from emp_details 
+CREATE VIEW emp_view1 AS SELECT * FROM emp_details; -- 
+View to show all records in emp_details 
+CREATE VIEW emp_view2 AS SELECT * FROM emp_details WHERE 
+emp_dept = 'designing'; -- View to show records where department is 
+'designing' 
+
+
+-- Select records from the views to verify their contents 
+SELECT * FROM emp_view1; 
+SELECT * FROM emp_view2; 
+
+
+-- Update a record in emp_details and check that it affects the view as well 
+UPDATE emp_details SET emp_dept = 'coding' WHERE emp_name = 
+'Mohan'; 
+SELECT * FROM emp_details; 
+
+
+-- Drop the views once done 
+DROP VIEW emp_view1; 
+DROP VIEW emp_view2; 
+
+
+-- Create an index on emp_no and emp_name columns for faster searching 
+CREATE INDEX emp_ind ON emp_details(emp_no, emp_name); 
+
+
+-- Show the created index on the emp_details table 
+SHOW INDEX FROM emp_details; 

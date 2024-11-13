@@ -1,0 +1,76 @@
+create database roll1;
+
+use roll1;
+
+CREATE TABLE N_RollCall (
+rollno INT PRIMARY KEY,
+name VARCHAR(50),
+attendance_date DATE
+);
+
+
+CREATE TABLE O_RollCall (
+rollno INT PRIMARY KEY,
+name VARCHAR(50),
+attendance_date DATE);
+
+
+desc N_RollCall;
+
+
+desc O_RollCall;
+
+
+INSERT INTO N_RollCall (rollno, name, attendance_date) VALUES
+(1, 'John Doe', '2022-01-01'),
+(2, 'Jane Doe', '2022-01-02'),
+(3, 'Bob Smith', '2022-01-03'),
+(4, 'Alice Johnson', '2022-01-04'),
+(5, 'Mike Brown', '2022-01-05');
+
+
+INSERT INTO O_RollCall (rollno, name, attendance_date) VALUES
+(1, 'John Doe', '2022-01-01'),
+(6, 'Emma Davis', '2022-01-06'),
+(7, 'David Lee', '2022-01-07');
+
+
+SELECT * FROM N_RollCall;
+
+
+SELECT * FROM O_RollCall;
+
+
+INSERT IGNORE INTO O_RollCall (rollno, name, attendance_date)
+SELECT rollno, name, attendance_date FROM N_RollCall;
+
+
+SELECT * FROM O_RollCall;
+
+
+DELIMITER //
+CREATE PROCEDURE MergeRollCallData()
+BEGIN
+DECLARE done INT DEFAULT FALSE;
+DECLARE rollno INT;
+DECLARE name VARCHAR(50);
+DECLARE attendance_date DATE;
+DECLARE cur1 CURSOR FOR SELECT rollno, name, attendance_date FROM N_RollCall;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+OPEN cur1;
+read_loop: LOOP
+FETCH cur1 INTO rollno, name, attendance_date;
+IF done THEN
+LEAVE read_loop;
+END IF;
+INSERT IGNORE INTO O_RollCall VALUES (rollno, name, attendance_date);
+END LOOP;
+CLOSE cur1;
+END //
+
+
+DELIMITER ;
+CALL MergeRollCallData();
+
+
+SELECT * FROM O_RollCall;

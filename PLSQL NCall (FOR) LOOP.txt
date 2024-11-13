@@ -1,0 +1,45 @@
+create database for3;
+
+use for3;
+
+CREATE TABLE N_RollCall (
+rollno INT PRIMARY KEY,
+name VARCHAR(50),
+attendance_date DATE
+);
+
+
+INSERT INTO N_RollCall (rollno, name, attendance_date) VALUES
+(1, 'John Doe', '2022-01-01'),
+(2, 'Jane Doe', '2022-01-02'),
+(3, 'Bob Smith', '2022-01-03'),
+(4, 'Alice Johnson', '2022-01-04'),
+(5, 'Mike Brown', '2022-01-05');
+
+
+DELIMITER //
+CREATE PROCEDURE GetRollCallDetails()
+BEGIN
+DECLARE done INT DEFAULT FALSE;
+DECLARE rollno INT;
+DECLARE name VARCHAR(50);
+DECLARE attendance_date DATE;
+DECLARE cur1 CURSOR FOR SELECT rollno, name, attendance_date FROM N_RollCall;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+DROP TABLE IF EXISTS temp_table;
+CREATE TEMPORARY TABLE temp_table (rollno INT, name VARCHAR(50), attendance_date DATE);
+OPEN cur1;
+read_loop: LOOP
+FETCH cur1 INTO rollno, name, attendance_date;
+     IF done THEN
+       LEAVE read_loop;
+     END IF;
+INSERT INTO temp_table VALUES (rollno, name, attendance_date);
+END LOOP;
+CLOSE cur1;
+SELECT * FROM temp_table;
+END //
+
+
+DELIMITER ;
+CALL GetRollCallDetails();
